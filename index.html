@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>KS Michael Capital — Staff Sign-In</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --navy:#2D3F5F;--navy-dark:#1e2d47;--navy-light:#3d5278;
+  --gold:#8B7340;--gold-light:#b09456;--gold-pale:#e8d9b5;
+  --cream:#f5f0e8;--cream-dark:#ede4d3;--green:#2D4A2D;
+  --white:#ffffff;--text:#1a2535;--text-2:#4a5568;--text-3:#8a96a8;
+  --border:#d5c9b0;--radius:10px;
+  --shadow:0 2px 8px rgba(45,63,95,0.1);
+  --shadow-lg:0 8px 32px rgba(45,63,95,0.15);
+  --font-display:'Cormorant Garamond',serif;
+  --font-body:'Jost',sans-serif;
+}
+body{font-family:var(--font-body);background:var(--cream);color:var(--text);min-height:100vh;font-size:14px;}
+body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(circle at 20% 20%,rgba(139,115,64,0.06) 0%,transparent 50%),radial-gradient(circle at 80% 80%,rgba(45,63,95,0.06) 0%,transparent 50%);pointer-events:none;z-index:0;}
+
+/* HEADER */
+.header{background:var(–navy);color:white;position:relative;overflow:hidden;}
+.header::after{content:’’;position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(–gold),var(–gold-pale),var(–gold));}
+.header-inner{max-width:980px;margin:0 auto;padding:22px 32px;display:flex;align-items:center;justify-content:space-between;}
+.header-brand{display:flex;align-items:center;gap:16px;}
+.logo-circle{width:52px;height:52px;border-radius:50%;background:var(–gold-pale);border:2px solid var(–gold);display:flex;align-items:center;justify-content:center;font-family:var(–font-display);font-size:16px;font-weight:700;color:var(–navy);flex-shrink:0;}
+.brand-name{font-family:var(–font-display);font-size:21px;font-weight:700;letter-spacing:0.5px;line-height:1.1;}
+.brand-name span{color:var(–gold-pale);}
+.brand-sub{font-size:10px;font-weight:300;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-top:3px;}
+.header-date{text-align:right;}
+.header-date-day{font-family:var(–font-display);font-size:26px;font-weight:600;color:var(–gold-pale);line-height:1;}
+.header-date-full{font-size:10px;color:rgba(255,255,255,0.45);letter-spacing:1.5px;text-transform:uppercase;margin-top:2px;}
+.header-time{font-size:13px;color:rgba(255,255,255,0.65);font-weight:300;margin-top:2px;letter-spacing:1px;}
+
+/* MAIN */
+.main{max-width:980px;margin:0 auto;padding:28px 32px;position:relative;z-index:1;}
+.section-title{font-family:var(–font-display);font-size:12px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(–gold);margin-bottom:14px;display:flex;align-items:center;gap:10px;}
+.section-title::after{content:’’;flex:1;height:1px;background:var(–border);}
+
+/* NAME GRID */
+.name-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:11px;margin-bottom:32px;}
+.name-btn{background:var(–white);border:1.5px solid var(–border);border-radius:var(–radius);padding:15px 16px;cursor:pointer;text-align:left;transition:all 0.2s;box-shadow:var(–shadow);position:relative;overflow:hidden;font-family:var(–font-body);}
+.name-btn::before{content:’’;position:absolute;left:0;top:0;bottom:0;width:3px;background:var(–border);transition:background 0.2s;}
+.name-btn:hover{border-color:var(–navy);box-shadow:var(–shadow-lg);transform:translateY(-1px);}
+.name-btn:hover::before{background:var(–navy);}
+.name-btn.signed-in{border-color:var(–green);background:#f0f7f0;}
+.name-btn.signed-in::before{background:var(–green);}
+.name-btn.signed-out{border-color:var(–gold);background:#fdf9f0;}
+.name-btn.signed-out::before{background:var(–gold);}
+.name-btn-name{font-size:13.5px;font-weight:500;color:var(–text);display:block;margin-bottom:3px;}
+.name-btn-status{font-size:11px;color:var(–text-3);display:flex;align-items:center;gap:5px;}
+.name-btn.signed-in .name-btn-status{color:var(–green);}
+.name-btn.signed-out .name-btn-status{color:var(–gold);}
+.status-dot{width:6px;height:6px;border-radius:50%;background:var(–text-3);flex-shrink:0;}
+.name-btn.signed-in .status-dot{background:var(–green);}
+.name-btn.signed-out .status-dot{background:var(–gold);}
+
+/* CARD */
+.card{background:var(–white);border:1px solid var(–border);border-radius:var(–radius);box-shadow:var(–shadow);overflow:hidden;margin-bottom:20px;}
+.card-header{background:var(–navy);color:white;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;}
+.card-title{font-family:var(–font-display);font-size:15px;font-weight:600;letter-spacing:0.5px;}
+.card-body{padding:0;}
+table{width:100%;border-collapse:collapse;}
+thead th{padding:9px 15px;text-align:left;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(–text-3);background:var(–cream);border-bottom:1px solid var(–border);}
+tbody tr{border-bottom:1px solid #f0ebe0;transition:background 0.1s;}
+tbody tr:last-child{border-bottom:none;}
+tbody tr:hover{background:var(–cream);}
+td{padding:10px 15px;font-size:13px;color:var(–text);vertical-align:middle;}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:500;}
+.badge-in{background:#e8f5e8;color:var(–green);}
+.badge-out{background:#fdf3e0;color:var(–gold);}
+.badge-navy{background:var(–navy);color:white;}
+.badge-grey{background:var(–cream-dark);color:var(–text-2);border:1px solid var(–border);}
+
+/* BUTTONS */
+.admin-bar{display:flex;justify-content:flex-end;margin-bottom:22px;}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:var(–radius);font-size:12.5px;font-weight:500;cursor:pointer;border:none;transition:all 0.15s;font-family:var(–font-body);letter-spacing:0.3px;}
+.btn-navy{background:var(–navy);color:white;}
+.btn-navy:hover{background:var(–navy-dark);}
+.btn-gold{background:var(–gold);color:white;}
+.btn-gold:hover{background:var(–gold-light);}
+.btn-outline{background:white;color:var(–text);border:1px solid var(–border);}
+.btn-outline:hover{background:var(–cream);}
+.btn-danger{background:#fef2f2;color:#dc2626;border:1px solid #fca5a5;}
+.btn-danger:hover{background:#dc2626;color:white;}
+.btn-green{background:#e8f5e8;color:var(–green);border:1px solid #a7d7a7;}
+.btn-green:hover{background:var(–green);color:white;}
+.btn-sm{padding:4px 10px;font-size:11.5px;}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(30,45,71,0.5);z-index:200;align-items:center;justify-content:center;backdrop-filter:blur(3px);}
+.modal-overlay.open{display:flex;}
+.modal{background:var(–white);border-radius:12px;box-shadow:0 24px 48px rgba(30,45,71,0.2);width:480px;max-width:95vw;max-height:92vh;overflow-y:auto;animation:modalIn 0.2s ease;border-top:3px solid var(–gold);}
+@keyframes modalIn{from{opacity:0;transform:scale(0.95) translateY(-10px);}to{opacity:1;transform:scale(1) translateY(0);}}
+.modal-header{padding:18px 22px 14px;border-bottom:1px solid var(–border);display:flex;align-items:center;justify-content:space-between;}
+.modal-title{font-family:var(–font-display);font-size:18px;font-weight:600;color:var(–navy);}
+.modal-close{background:none;border:none;font-size:18px;cursor:pointer;color:var(–text-3);padding:2px 6px;border-radius:4px;}
+.modal-close:hover{background:var(–cream);color:var(–text);}
+.modal-body{padding:20px 22px;}
+.modal-footer{padding:14px 22px;border-top:1px solid var(–border);display:flex;gap:8px;justify-content:flex-end;}
+
+/* PIN PAD */
+.pin-person{font-family:var(–font-display);font-size:24px;font-weight:600;color:var(–navy);text-align:center;margin-bottom:4px;}
+.pin-instruction{font-size:12px;color:var(–text-3);text-align:center;margin-bottom:16px;}
+.pin-display{display:flex;gap:10px;justify-content:center;margin-bottom:20px;}
+.pin-dot{width:14px;height:14px;border-radius:50%;border:2px solid var(–border);transition:all 0.15s;}
+.pin-dot.filled{background:var(–navy);border-color:var(–navy);}
+.pin-dot.error{background:#dc2626;border-color:#dc2626;}
+.pin-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:220px;margin:0 auto 12px;}
+.pin-key{padding:16px;text-align:center;font-size:18px;font-weight:500;background:var(–cream);border:1px solid var(–border);border-radius:var(–radius);cursor:pointer;transition:all 0.1s;font-family:var(–font-body);user-select:none;}
+.pin-key:hover{background:var(–navy);color:white;border-color:var(–navy);}
+.pin-key:active{transform:scale(0.95);}
+.pin-key.del{font-size:14px;background:#fef2f2;color:#dc2626;border-color:#fca5a5;}
+.pin-key.del:hover{background:#dc2626;color:white;}
+.pin-key.zero{grid-column:2;}
+.pin-error{text-align:center;color:#dc2626;font-size:12px;min-height:18px;margin-top:4px;}
+.pin-action-label{text-align:center;font-size:13px;font-weight:500;margin-bottom:14px;}
+.pin-action-label.sign-in{color:var(–green);}
+.pin-action-label.sign-out{color:var(–gold);}
+
+/* FORMS */
+.form-row{margin-bottom:14px;}
+.form-row label{display:block;font-size:11px;font-weight:600;color:var(–text-2);margin-bottom:5px;text-transform:uppercase;letter-spacing:0.8px;}
+.form-row input,.form-row select{width:100%;padding:9px 12px;border:1.5px solid var(–border);border-radius:var(–radius);font-size:13.5px;font-family:var(–font-body);color:var(–text);background:var(–white);outline:none;transition:border 0.15s;}
+.form-row input:focus,.form-row select:focus{border-color:var(–navy);box-shadow:0 0 0 3px rgba(45,63,95,0.08);}
+.form-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+
+/* ADMIN TABS */
+.tabs{display:flex;border-bottom:2px solid var(–border);margin-bottom:18px;}
+.tab{padding:9px 16px;font-size:13px;font-weight:500;cursor:pointer;color:var(–text-2);border-bottom:2px solid transparent;margin-bottom:-2px;transition:all 0.15s;font-family:var(–font-body);}
+.tab:hover{color:var(–navy);}
+.tab.active{color:var(–navy);border-bottom-color:var(–navy);font-weight:600;}
+.tab-panel{display:none;}
+.tab-panel.active{display:block;}
+
+/* STAFF LIST */
+.staff-item{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(–border);gap:10px;}
+.staff-item:last-child{border-bottom:none;}
+.staff-item-name{font-size:13.5px;font-weight:500;flex:1;}
+.staff-item-pin{font-family:‘Courier New’,monospace;font-size:13px;background:var(–cream-dark);border:1px solid var(–border);padding:3px 10px;border-radius:6px;letter-spacing:2px;color:var(–navy);font-weight:600;}
+.staff-actions{display:flex;gap:6px;}
+
+/* PIN SHEET */
+.pin-sheet{background:var(–cream);border:1px solid var(–border);border-radius:var(–radius);padding:16px;}
+.pin-sheet-title{font-family:var(–font-display);font-size:16px;font-weight:600;color:var(–navy);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(–border);}
+.pin-sheet-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid rgba(213,201,176,0.5);font-size:13px;}
+.pin-sheet-row:last-child{border-bottom:none;}
+.pin-sheet-name{font-weight:500;}
+.pin-sheet-num{font-family:‘Courier New’,monospace;font-size:14px;font-weight:700;color:var(–navy);letter-spacing:3px;}
+
+/* EDIT INPUT */
+.edit-input{padding:4px 8px;border:1px solid var(–border);border-radius:5px;font-size:12.5px;font-family:var(–font-body);width:100%;outline:none;}
+.edit-input:focus{border-color:var(–navy);}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;background:var(–navy);color:white;padding:11px 18px;border-radius:var(–radius);font-size:13px;font-weight:500;box-shadow:var(–shadow-lg);z-index:999;opacity:0;transform:translateY(8px);transition:all 0.2s;pointer-events:none;border-left:3px solid var(–gold);}
+.toast.show{opacity:1;transform:translateY(0);}
+
+/* EMPTY */
+.empty{text-align:center;padding:30px 20px;color:var(–text-3);}
+.empty-icon{font-size:26px;margin-bottom:8px;}
+
+.actions-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;}
+hr.divider{border:none;border-top:1px solid var(–border);margin:16px 0;}
+</style>
+
+</head>
+<body>
+
+<!-- HEADER -->
+
+<div class="header">
+  <div class="header-inner">
+    <div class="header-brand">
+      <div class="logo-circle">KSM</div>
+      <div class="brand-text">
+        <div class="brand-name"><span>KS</span> MICHAEL CAPITAL</div>
+        <div class="brand-sub">Staff Attendance Register</div>
+      </div>
+    </div>
+    <div class="header-date">
+      <div class="header-date-day" id="hdr-day"></div>
+      <div class="header-date-full" id="hdr-date"></div>
+      <div class="header-time" id="hdr-time"></div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+
+<div class="main">
+  <div class="admin-bar">
+    <button class="btn btn-navy" onclick="openAdminLogin()">⚙️ Admin Panel</button>
+  </div>
+
+  <div class="section-title">Select Your Name to Sign In / Out</div>
+  <div class="name-grid" id="name-grid"></div>
+
+  <div class="section-title">Today's Attendance Log</div>
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">Sign-In Register — <span id="log-date-title"></span></div>
+      <span id="log-count" style="font-size:12px;opacity:0.7"></span>
+    </div>
+    <div class="card-body">
+      <table>
+        <thead>
+          <tr><th>Name</th><th>Date</th><th>Sign In</th><th>Sign Out</th><th>Status</th><th>Duration</th></tr>
+        </thead>
+        <tbody id="log-table"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- ===== PIN ENTRY MODAL ===== -->
+
+<div class="modal-overlay" id="modal-pin">
+  <div class="modal" style="max-width:320px">
+    <div class="modal-header">
+      <div class="modal-title" id="pin-modal-title">Enter PIN</div>
+      <button class="modal-close" onclick="closePinModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="pin-person" id="pin-person-name"></div>
+      <div class="pin-action-label" id="pin-action-label"></div>
+      <div class="pin-display" id="pin-display">
+        <div class="pin-dot" id="pd0"></div>
+        <div class="pin-dot" id="pd1"></div>
+        <div class="pin-dot" id="pd2"></div>
+        <div class="pin-dot" id="pd3"></div>
+      </div>
+      <div class="pin-pad">
+        <div class="pin-key" onclick="pinPress('1')">1</div>
+        <div class="pin-key" onclick="pinPress('2')">2</div>
+        <div class="pin-key" onclick="pinPress('3')">3</div>
+        <div class="pin-key" onclick="pinPress('4')">4</div>
+        <div class="pin-key" onclick="pinPress('5')">5</div>
+        <div class="pin-key" onclick="pinPress('6')">6</div>
+        <div class="pin-key" onclick="pinPress('7')">7</div>
+        <div class="pin-key" onclick="pinPress('8')">8</div>
+        <div class="pin-key" onclick="pinPress('9')">9</div>
+        <div class="pin-key zero" onclick="pinPress('0')">0</div>
+        <div class="pin-key del" onclick="pinBackspace()">⌫</div>
+      </div>
+      <div class="pin-error" id="pin-error"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ADMIN LOGIN ===== -->
+
+<div class="modal-overlay" id="modal-admin-login">
+  <div class="modal" style="max-width:340px">
+    <div class="modal-header">
+      <div class="modal-title">Admin Access</div>
+      <button class="modal-close" onclick="closeModal('modal-admin-login')">✕</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:13px;color:var(--text-2);text-align:center;margin-bottom:16px">Enter your admin password to continue.</p>
+      <div class="form-row">
+        <input type="password" id="admin-pw-input" placeholder="Admin password…" onkeydown="if(event.key==='Enter')checkAdminPw()"/>
+      </div>
+      <div class="pin-error" id="pw-error"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('modal-admin-login')">Cancel</button>
+      <button class="btn btn-navy" onclick="checkAdminPw()">Unlock →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ADMIN PANEL ===== -->
+
+<div class="modal-overlay" id="modal-admin">
+  <div class="modal" style="width:680px">
+    <div class="modal-header">
+      <div class="modal-title">⚙️ Admin Panel</div>
+      <button class="modal-close" onclick="closeModal('modal-admin')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="tabs">
+        <div class="tab active" onclick="switchTab('tab-staff',this)">Staff & PINs</div>
+        <div class="tab" onclick="switchTab('tab-log',this)">Full Log</div>
+        <div class="tab" onclick="switchTab('tab-export',this)">Export</div>
+        <div class="tab" onclick="switchTab('tab-settings',this)">Settings</div>
+      </div>
+
+```
+  <!-- STAFF & PINS TAB -->
+  <div class="tab-panel active" id="tab-staff">
+    <div class="actions-row">
+      <span style="font-size:12px;color:var(--text-2)">Each staff member has a unique 4-digit PIN.</span>
+      <button class="btn btn-gold btn-sm" onclick="printPinSheet()">🖨️ Print PIN Sheet</button>
+    </div>
+    <div id="staff-list"></div>
+    <hr class="divider"/>
+    <div style="font-size:12px;font-weight:600;color:var(--text-2);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.5px;">Add New Staff Member</div>
+    <div style="display:flex;gap:8px;">
+      <input type="text" id="new-staff-input" placeholder="Full name…" style="flex:1;padding:8px 12px;border:1.5px solid var(--border);border-radius:var(--radius);font-size:13.5px;font-family:var(--font-body);outline:none;" onkeydown="if(event.key==='Enter')addStaff()"/>
+      <button class="btn btn-navy" onclick="addStaff()">+ Add & Generate PIN</button>
+    </div>
+  </div>
+
+  <!-- FULL LOG TAB -->
+  <div class="tab-panel" id="tab-log">
+    <div class="actions-row">
+      <div style="font-size:12px;color:var(--text-2)">Click any cell to edit. Changes save immediately.</div>
+      <button class="btn btn-danger btn-sm" onclick="clearTodayLog()">🗑 Clear Today</button>
+    </div>
+    <div style="overflow-x:auto">
+      <table>
+        <thead><tr><th>Name</th><th>Date</th><th>Sign In</th><th>Sign Out</th><th>Status</th><th></th></tr></thead>
+        <tbody id="admin-log-table"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- EXPORT TAB -->
+  <div class="tab-panel" id="tab-export">
+    <p style="font-size:13px;color:var(--text-2);margin-bottom:18px">Export the attendance log as a CSV file. Opens in Microsoft Excel.</p>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <button class="btn btn-navy" onclick="exportCSV('today')">⬇️ Export Today's Log</button>
+      <button class="btn btn-outline" onclick="exportCSV('all')">⬇️ Export Full Log (All Dates)</button>
+    </div>
+    <div style="margin-top:18px;padding:14px;background:var(--cream);border-radius:var(--radius);font-size:12px;color:var(--text-2);">
+      CSV files open directly in Excel or any spreadsheet app.
+    </div>
+  </div>
+
+  <!-- SETTINGS TAB -->
+  <div class="tab-panel" id="tab-settings">
+    <div class="form-row">
+      <label>Change Admin Password</label>
+      <input type="password" id="new-pw-1" placeholder="New password"/>
+    </div>
+    <div class="form-row">
+      <label>Confirm New Password</label>
+      <input type="password" id="new-pw-2" placeholder="Confirm password"/>
+    </div>
+    <button class="btn btn-navy" onclick="changePassword()">Update Password</button>
+    <hr class="divider"/>
+    <div style="font-size:12px;color:var(--text-2)"><strong>Storage:</strong> All data saved locally in this browser. Do not clear browser data.</div>
+  </div>
+</div>
+```
+
+  </div>
+</div>
+
+<!-- PRINT PIN SHEET (hidden) -->
+
+<div id="print-area" style="display:none"></div>
+
+<script>
+// ===== STATE =====
+let state = {
+  staff: [
+    {name:'Pescy Makina', pin:''},
+    {name:'Decent Madhuku', pin:''},
+    {name:'Challenge Dondo', pin:''},
+    {name:'Tapiwa Soko', pin:''},
+    {name:'Rudo Kavande', pin:''},
+    {name:'Tawanda Simbamba', pin:''},
+    {name:'Panashe Kufa', pin:''}
+  ],
+  log: [],
+  adminPassword: 'Latmak2025'
+};
+
+function generatePin() {
+  return String(Math.floor(1000 + Math.random() * 9000));
+}
+
+function ensureAllPins() {
+  state.staff.forEach(s => { if (!s.pin) s.pin = generatePin(); });
+}
+
+function loadState() {
+  try {
+    const s = localStorage.getItem('ksm_signin_v2');
+    if (s) {
+      const p = JSON.parse(s);
+      state = {...state, ...p};
+    }
+  } catch(e) {}
+  ensureAllPins();
+}
+
+function saveState() {
+  try { localStorage.setItem('ksm_signin_v2', JSON.stringify(state)); } catch(e) {}
+}
+
+// ===== CLOCK =====
+function todayStr() {
+  return new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'2-digit',year:'numeric'});
+}
+function nowTimeStr() {
+  return new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+}
+function nowTimeShort() {
+  return new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+}
+function updateClock() {
+  const now = new Date();
+  document.getElementById('hdr-day').textContent = now.getDate();
+  document.getElementById('hdr-date').textContent = now.toLocaleDateString('en-GB',{weekday:'long',month:'long',year:'numeric'});
+  document.getElementById('hdr-time').textContent = now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  document.getElementById('log-date-title').textContent = now.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+function calcDuration(inTime, outTime) {
+  if (!inTime || !outTime) return '—';
+  try {
+    const [ih,im,is_] = inTime.split(':').map(Number);
+    const [oh,om,os_] = outTime.split(':').map(Number);
+    const diff = (oh*3600+om*60+(os_||0)) - (ih*3600+im*60+(is_||0));
+    if (diff <= 0) return '—';
+    const h = Math.floor(diff/3600);
+    const m = Math.floor((diff%3600)/60);
+    return h > 0 ? `${h}h ${m}m` : `${m}m`;
+  } catch(e) { return '—'; }
+}
+
+// ===== MODAL =====
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-overlay').forEach(o => {
+  o.addEventListener('click', e => { if (e.target === o) o.classList.remove('open'); });
+});
+
+// ===== TOAST =====
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ===== PIN ENTRY =====
+let pinBuffer = '';
+let pinTarget = null;
+
+function handleNameClick(name) {
+  const today = todayStr();
+  const existing = state.log.find(e => e.name === name && e.date === today && !e.signOut);
+  const action = existing ? 'Sign Out' : 'Sign In';
+  pinTarget = { name, action };
+  pinBuffer = '';
+  document.getElementById('pin-person-name').textContent = name;
+  document.getElementById('pin-action-label').textContent = action;
+  document.getElementById('pin-action-label').className = 'pin-action-label ' + (action === 'Sign In' ? 'sign-in' : 'sign-out');
+  document.getElementById('pin-error').textContent = '';
+  updatePinDots();
+  openModal('modal-pin');
+}
+
+function closePinModal() {
+  pinBuffer = '';
+  pinTarget = null;
+  closeModal('modal-pin');
+}
+
+function pinPress(digit) {
+  if (pinBuffer.length >= 4) return;
+  pinBuffer += digit;
+  updatePinDots();
+  if (pinBuffer.length === 4) {
+    setTimeout(checkPin, 150);
+  }
+}
+
+function pinBackspace() {
+  pinBuffer = pinBuffer.slice(0, -1);
+  document.getElementById('pin-error').textContent = '';
+  updatePinDots();
+}
+
+function updatePinDots() {
+  for (let i = 0; i < 4; i++) {
+    const dot = document.getElementById('pd' + i);
+    dot.classList.remove('filled', 'error');
+    if (i < pinBuffer.length) dot.classList.add('filled');
+  }
+}
+
+function checkPin() {
+  if (!pinTarget) return;
+  const staff = state.staff.find(s => s.name === pinTarget.name);
+  if (!staff) return;
+
+  if (pinBuffer !== staff.pin) {
+    // Wrong PIN — shake dots red
+    for (let i = 0; i < 4; i++) {
+      const dot = document.getElementById('pd' + i);
+      dot.classList.remove('filled');
+      dot.classList.add('error');
+    }
+    document.getElementById('pin-error').textContent = '✕ Incorrect PIN. Try again.';
+    setTimeout(() => {
+      pinBuffer = '';
+      updatePinDots();
+      document.getElementById('pin-error').textContent = '';
+    }, 1000);
+    return;
+  }
+
+  // Correct PIN
+  const today = todayStr();
+  const timeStr = nowTimeStr();
+  if (pinTarget.action === 'Sign In') {
+    state.log.push({id: Date.now(), name: pinTarget.name, date: today, signIn: timeStr, signOut: null});
+    toast('✅ ' + pinTarget.name + ' signed in at ' + nowTimeShort());
+  } else {
+    const entry = state.log.find(e => e.name === pinTarget.name && e.date === today && !e.signOut);
+    if (entry) entry.signOut = timeStr;
+    toast('👋 ' + pinTarget.name + ' signed out at ' + nowTimeShort());
+  }
+  saveState();
+  closePinModal();
+  renderNameGrid();
+  renderTodayLog();
+}
+
+// ===== NAME GRID =====
+function renderNameGrid() {
+  const grid = document.getElementById('name-grid');
+  const today = todayStr();
+  grid.innerHTML = state.staff.map(s => {
+    const entry = state.log.find(e => e.name === s.name && e.date === today && !e.signOut);
+    const done = state.log.find(e => e.name === s.name && e.date === today && e.signOut);
+    let cls = '', status = 'Not signed in';
+    if (entry) { cls = 'signed-in'; status = '✓ In · ' + entry.signIn.substring(0,5); }
+    else if (done) { cls = 'signed-out'; status = '✓ Done · ' + done.signOut.substring(0,5); }
+    return `<button class="name-btn ${cls}" onclick="handleNameClick('${escJs(s.name)}')">
+      <span class="name-btn-name">${escHtml(s.name)}</span>
+      <span class="name-btn-status"><span class="status-dot"></span>${status}</span>
+    </button>`;
+  }).join('');
+}
+
+// ===== TODAY LOG =====
+function renderTodayLog() {
+  const today = todayStr();
+  const entries = state.log.filter(e => e.date === today);
+  const tb = document.getElementById('log-table');
+  document.getElementById('log-count').textContent = entries.length + ' entr' + (entries.length===1?'y':'ies');
+  if (!entries.length) {
+    tb.innerHTML = '<tr><td colspan="6"><div class="empty"><div class="empty-icon">📋</div><p>No sign-ins recorded today.</p></div></td></tr>';
+    return;
+  }
+  tb.innerHTML = entries.map(e => `<tr>
+    <td><strong>${escHtml(e.name)}</strong></td>
+    <td style="color:var(--text-2)">${e.date}</td>
+    <td>${e.signIn ? e.signIn.substring(0,5) : '—'}</td>
+    <td>${e.signOut ? e.signOut.substring(0,5) : '—'}</td>
+    <td>${e.signOut ? '<span class="badge badge-out">Signed Out</span>' : '<span class="badge badge-in">In Office</span>'}</td>
+    <td style="color:var(--text-2)">${calcDuration(e.signIn, e.signOut)}</td>
+  </tr>`).join('');
+}
+
+// ===== ADMIN LOGIN =====
+function openAdminLogin() {
+  document.getElementById('admin-pw-input').value = '';
+  document.getElementById('pw-error').textContent = '';
+  openModal('modal-admin-login');
+  setTimeout(() => document.getElementById('admin-pw-input').focus(), 200);
+}
+function checkAdminPw() {
+  const val = document.getElementById('admin-pw-input').value;
+  if (val === state.adminPassword) {
+    closeModal('modal-admin-login');
+    renderStaffList();
+    renderAdminLog();
+    openModal('modal-admin');
+  } else {
+    document.getElementById('pw-error').textContent = '✕ Incorrect password.';
+    document.getElementById('admin-pw-input').value = '';
+    document.getElementById('admin-pw-input').focus();
+  }
+}
+
+// ===== ADMIN TABS =====
+function switchTab(id, el) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  el.classList.add('active');
+  if (id === 'tab-staff') renderStaffList();
+  if (id === 'tab-log') renderAdminLog();
+}
+
+// ===== STAFF LIST =====
+function renderStaffList() {
+  const el = document.getElementById('staff-list');
+  if (!state.staff.length) { el.innerHTML = '<div class="empty"><p>No staff added yet.</p></div>'; return; }
+  el.innerHTML = state.staff.map((s, i) => `
+    <div class="staff-item">
+      <span class="staff-item-name">${escHtml(s.name)}</span>
+      <span class="staff-item-pin" id="pin-display-${i}">****</span>
+      <div class="staff-actions">
+        <button class="btn btn-outline btn-sm" onclick="toggleShowPin(${i})">👁 Show</button>
+        <button class="btn btn-green btn-sm" onclick="regenPin(${i})">↻ New PIN</button>
+        <button class="btn btn-danger btn-sm" onclick="removeStaff(${i})">✕</button>
+      </div>
+    </div>`).join('');
+}
+
+function toggleShowPin(i) {
+  const el = document.getElementById('pin-display-' + i);
+  el.textContent = el.textContent === '****' ? state.staff[i].pin : '****';
+}
+
+function regenPin(i) {
+  if (!confirm('Generate a new PIN for ' + state.staff[i].name + '? Their old PIN will stop working.')) return;
+  state.staff[i].pin = generatePin();
+  saveState();
+  renderStaffList();
+  toast('✅ New PIN generated for ' + state.staff[i].name);
+}
+
+function addStaff() {
+  const input = document.getElementById('new-staff-input');
+  const name = input.value.trim();
+  if (!name) return;
+  if (state.staff.find(s => s.name === name)) { toast('⚠️ Name already exists'); return; }
+  const newStaff = {name, pin: generatePin()};
+  state.staff.push(newStaff);
+  saveState();
+  renderStaffList();
+  renderNameGrid();
+  input.value = '';
+  toast('✅ ' + name + ' added — PIN: ' + newStaff.pin);
+}
+
+function removeStaff(i) {
+  if (!confirm('Remove ' + state.staff[i].name + '?')) return;
+  state.staff.splice(i, 1);
+  saveState();
+  renderStaffList();
+  renderNameGrid();
+  toast('🗑️ Staff member removed');
+}
+
+// ===== PRINT PIN SHEET =====
+function printPinSheet() {
+  const rows = state.staff.map(s =>
+    `<tr><td style="padding:10px 14px;border-bottom:1px solid #ddd;font-size:14px">${escHtml(s.name)}</td>
+     <td style="padding:10px 14px;border-bottom:1px solid #ddd;font-family:monospace;font-size:16px;font-weight:700;letter-spacing:4px;color:#2D3F5F">${s.pin}</td></tr>`
+  ).join('');
+  const w = window.open('','_blank');
+  w.document.write(`<!DOCTYPE html><html><head><title>KSM Capital — Staff PINs</title>
+  <style>body{font-family:Arial,sans-serif;padding:40px;color:#1a2535;}
+  h2{color:#2D3F5F;margin-bottom:4px;}
+  p{color:#888;font-size:12px;margin-bottom:24px;}
+  table{border-collapse:collapse;width:100%;max-width:400px;}
+  thead th{background:#2D3F5F;color:white;padding:10px 14px;text-align:left;font-size:12px;letter-spacing:1px;text-transform:uppercase;}
+  @media print{button{display:none}}</style></head><body>
+
+  <h2>KS Michael Capital — Staff PIN Sheet</h2>
+  <p>Confidential — Admin use only — ${new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}</p>
+  <table><thead><tr><th>Name</th><th>PIN</th></tr></thead><tbody>${rows}</tbody></table>
+  <br/><button onclick="window.print()">🖨️ Print</button>
+  </body></html>`);
+  w.document.close();
+}
+
+// ===== ADMIN LOG =====
+function renderAdminLog() {
+const tb = document.getElementById(‘admin-log-table’);
+if (!state.log.length) { tb.innerHTML = ‘<tr><td colspan="6"><div class="empty"><p>No entries yet.</p></div></td></tr>’; return; }
+const sorted = […state.log].sort((a,b) => {
+if (a.date > b.date) return -1; if (a.date < b.date) return 1;
+return (a.signIn||’’) > (b.signIn||’’) ? -1 : 1;
+});
+tb.innerHTML = sorted.map(e => `<tr>
+<td><strong>${escHtml(e.name)}</strong></td>
+<td><input class="edit-input" value="${escHtml(e.date)}" onchange="editEntry(${e.id},'date',this.value)" style="width:95px"/></td>
+<td><input class="edit-input" value="${escHtml(e.signIn||'')}" onchange="editEntry(${e.id},'signIn',this.value)" style="width:75px"/></td>
+<td><input class="edit-input" value="${escHtml(e.signOut||'')}" onchange="editEntry(${e.id},'signOut',this.value)" style="width:75px"/></td>
+<td>${e.signOut ? ‘<span class="badge badge-out">Out</span>’ : ‘<span class="badge badge-in">In</span>’}</td>
+<td><button class="btn btn-danger btn-sm" onclick="deleteEntry(${e.id})">✕</button></td>
+
+  </tr>`).join('');
+}
+
+function editEntry(id, field, val) {
+const e = state.log.find(e => e.id === id);
+if (e) { e[field] = val || null; saveState(); renderTodayLog(); renderNameGrid(); }
+}
+function deleteEntry(id) {
+if (!confirm(‘Delete this entry?’)) return;
+state.log = state.log.filter(e => e.id !== id);
+saveState(); renderAdminLog(); renderTodayLog(); renderNameGrid();
+toast(‘🗑️ Entry deleted’);
+}
+function clearTodayLog() {
+if (!confirm(“Clear all of today’s entries?”)) return;
+const today = todayStr();
+state.log = state.log.filter(e => e.date !== today);
+saveState(); renderAdminLog(); renderTodayLog(); renderNameGrid();
+toast(“🗑️ Today’s log cleared”);
+}
+
+// ===== EXPORT =====
+function exportCSV(scope) {
+const today = todayStr();
+const data = scope === ‘today’ ? state.log.filter(e => e.date === today) : state.log;
+if (!data.length) { toast(‘⚠️ No data to export’); return; }
+const rows = [[‘Name’,‘Date’,‘Sign In’,‘Sign Out’,‘Duration’,‘Status’]];
+data.forEach(e => rows.push([e.name, e.date, e.signIn||’’, e.signOut||’’, calcDuration(e.signIn,e.signOut), e.signOut?‘Completed’:‘In Office’]));
+const csv = rows.map(r => r.map(v => ‘”’+String(v).replace(/”/g,’””’)+’”’).join(’,’)).join(’\r\n’);
+const a = document.createElement(‘a’);
+a.href = URL.createObjectURL(new Blob([csv],{type:‘text/csv’}));
+a.download = ‘KSM_Attendance_’+(scope===‘today’?today:‘All’)+’.csv’;
+a.click();
+toast(‘⬇️ Exporting…’);
+}
+
+// ===== PASSWORD =====
+function changePassword() {
+const p1 = document.getElementById(‘new-pw-1’).value;
+const p2 = document.getElementById(‘new-pw-2’).value;
+if (!p1) { toast(‘⚠️ Enter a new password’); return; }
+if (p1 !== p2) { toast(‘⚠️ Passwords do not match’); return; }
+state.adminPassword = p1;
+saveState();
+document.getElementById(‘new-pw-1’).value = ‘’;
+document.getElementById(‘new-pw-2’).value = ‘’;
+toast(‘✅ Password updated’);
+}
+
+// ===== HELPERS =====
+function escHtml(s) { return String(s||’’).replace(/&/g,’&’).replace(/</g,’<’).replace(/>/g,’>’).replace(/”/g,’"’); }
+function escJs(s) { return String(s||’’).replace(/’/g,”\’”); }
+
+// ===== INIT =====
+function init() {
+loadState();
+renderNameGrid();
+renderTodayLog();
+}
+init();
+</script>
+
+</body>
+</html>
